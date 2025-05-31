@@ -1,38 +1,66 @@
-# 🧠 AI-Powered Legal Contract Analyzer
+# AI-Powered Legal Contract Analyzer
 
-This project uses NLP techniques to extract clauses from legal contracts (e.g., NDAs) using the CUAD dataset.
+A Python project that parses legal contract documents (PDF and DOCX), extracts clauses and named entities using Natural Language Processing (NLP) techniques, specifically SpaCy-based Named Entity Recognition (NER).  
+This project aims to help automate contract review by identifying key legal clauses and entities.
 
-## 🚀 Setup Instructions
+---
 
-1. Clone the repo:
-git clone https://github.com/Dharani8713/legal-contract-analyzer.git
+## Features
 
+- Parse legal PDFs and DOCX files using `pdfplumber` and `docx2txt`
+- Clean and chunk contract documents into clauses or paragraphs
+- Train and fine-tune SpaCy NER models to identify clause types (e.g., Confidentiality, Termination)
+- Generate outputs in JSON and CSV formats for further analysis
 
-2. Create a conda env:
-conda create -n contractenv python=3.10
-conda activate contractenv
+---
 
-
-3. Install dependencies:
-pip install -r requirements.txt
-
-
-4. Download `CUAD_v1.json` from:
-[CUAD GitHub](https://github.com/TheAtticusProject/cuad)
-
-Place it in: `data/raw/`
-
-## 📊 Dataset
-We use the CUAD dataset (Contract Understanding Atticus Dataset) for clause extraction tasks.
-
-## 📁 Folder Structure
+## Project Structure
 
 legal-contract-analyzer/
-├── data/
-│ └── raw/
-│ └── CUAD_v1.json (not included)
-├── notebooks/
-│ └── explore_cuad.ipynb
-├── app.py (or streamlit_app.py)
-└── README.md
+├── document_parser.py # Script to parse and chunk documents
+├── ner_model.py # Script for training/inference of NER model
+├── train_ner.ipynb # Jupyter notebook for NER model training
+├── train_data_spacy.json # Sample training data for NER
+├── requirements.txt # Python dependencies
+├── README.md # Project overview
+├── samples/ # Sample contract files (PDF and DOCX)
+│ ├── sample_contract.pdf
+│ └── sample_contract.docx
+└── outputs/ # Parsed outputs (JSON, CSV)
+├── sample_contract_clauses.json
+└── sample_contract_clauses.csv
 
+---
+
+## Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/Dharani8713/legal-contract-analyzer.git
+   cd legal-contract-analyzer
+2. Create a Python virtual environment and activate it:
+
+On Windows:
+python -m venv venv
+venv\Scripts\activate
+On macOS/Linux:
+python3 -m venv venv
+source venv/bin/activate
+
+3. Install required packages:
+   pip install -r requirements.txt
+
+Usage
+Parse documents:
+python document_parser.py --input samples/sample_contract.pdf --output_dir outputs/
+This command will parse the input contract file, chunk it into clauses, and save outputs in JSON and CSV formats inside the outputs/ folder.
+
+Train NER model
+Open and run the Jupyter notebook train_ner.ipynb to train or fine-tune the SpaCy NER model on your annotated data.
+
+Evaluate NER model
+Run the evaluation script (to be added) to measure model performance on a test set and generate an evaluation report.
+
+Dataset
+The training data format follows SpaCy's JSON format for NER and includes clause annotations inspired by the CUAD dataset (Contract Understanding Atticus Dataset).
