@@ -7,11 +7,11 @@ import pandas as pd
 import numpy as np
 
 # Load model and tokenizer
-model_dir = "./saved_model"
+model_dir = model_dir = "nlpaueb/legal-bert-base-uncased
 
 try:
     tokenizer = AutoTokenizer.from_pretrained(model_dir)
-    model = AutoModelForSequenceClassification.from_pretrained(model_dir)
+    model = AutoModelForSequenceClassification.from_pretrained(model_dir, num_labels=2)
 except Exception as e:
     raise RuntimeError(
         f"❌ Error loading model from '{model_dir}'.\nMake sure you have trained and saved it.\nOriginal error:\n{e}"
