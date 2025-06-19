@@ -1,50 +1,76 @@
-# classifier.py
 import os
-import joblib
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
-from torch.nn.functional import softmax
+from transformers import Trainer, TrainingArguments
+from datasets import Dataset
+import pandas as pd
+import numpy as np
 
 # Load model and tokenizer
-model_dir = "nlpaueb/legal-bert-base-uncased"
-tokenizer = AutoTokenizer.from_pretrained(model_dir)
-model = AutoModelForSequenceClassification.from_pretrained(model_dir)
+model_dir = "./saved_model"
 
-# Define device (CPU or GPU)
+try:
+    tokenizer = AutoTokenizer.from_pretrained(model_dir)
+    model = AutoModelForSequenceClassification.from_pretrained(model_dir)
+except Exception as e:
+    raise RuntimeError(
+        f"❌ Error loading model from '{model_dir}'.\nMake sure you have trained and saved it.\nOriginal error:\n{e}"
+    )
+
+# Define device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
-# Define your label list
-LABELS = [
-    "Label 0", "Label 1", "Label 2", "Label 3", "Label 4", "Label 5",
-    "Label 6", "Label 7", "Label 8", "Label 9", "Label 10", "Label 11",
-    "Label 12", "Label 13", "Label 14", "Label 15", "Label 16", "Label 17",
-    "Label 18", "Label 19", "Label 20", "Label 21", "Label 22", "Label 23",
-    "Label 24", "Label 25", "Label 26", "Label 27", "Label 28", "Label 29",
-    "Label 30", "Label 31", "Label 32", "Label 33", "Label 34", "Label 35",
-    "Label 36", "Label 37", "Label 38"
-]
-def classify_clauses(clauses):
-    predictions = []
-    for clause in clauses:
-        inputs = tokenizer(clause, return_tensors="pt", truncation=True, padding=True, max_length=256)
-        inputs = {k: v.to(device) for k, v in inputs.items()}
-        with torch.no_grad():
-            outputs = model(**inputs)
-            probs = softmax(outputs.logits, dim=1)
-            pred_class = torch.argmax(probs, dim=1).item()
+# Classify clauses
+def classify_clauses(clauses: list[str]) -> list[str]:
+    inputs = tokenizer(clauses, padding=True, truncation=True, return_tensors="pt").to(device)
+    with torch.no_grad():
+        outputs = model(**inputs)
+        predictions = torch.argmax(outputs.logits, dim=1)
+    return predictions.cpu().numpy().tolist()
 
-            # DEBUG PRINT
-            print("Predicted class index:", pred_class)
-            print("Model output logits shape:", outputs.logits.shape)
-            print("Number of labels available:", len(LABELS))
 
-            if pred_class >= len(LABELS):
-             print(f"[!] Warning: pred_class {pred_class} out of LABELS range")
-             label = "Unknown"
-            else:
-              label = LABELS[pred_class]
-            predictions.append(label)
+# Optional: Training script when run directly
+if __name__ == "__main__":
+    print("🔧 Training model from scratch...")
 
-    return predictions
+    # Load your dataset (make sure this file exists and has 'clause' + 'label' columns)
+    df = pd.read_csv("data/clauses.csv")  # Example path
 
+    # Encode labels
+    label_map = {label: i for i, label in enumerate(sorted(df['label'].unique()))}
+    df['label'] = df['label'].map(label_map)
+
+    # Convert to HuggingFace Dataset
+    dataset = Dataset.from_pandas(df)
+    dataset = dataset.train_test_split(test_size=0.2)
+
+    def tokenize(batch):
+        return tokenizer(batch["clause"], padding=True, truncation=True)
+
+    tokenized = dataset.map(tokenize, batched=True)
+
+    training_args = TrainingArguments(
+        output_dir="./saved_model",
+        evaluation_strategy="epoch",
+        learning_rate=2e-5,
+        per_device_train_batch_size=8,
+        per_device_eval_batch_size=8,
+        num_train_epochs=3,
+        weight_decay=0.01,
+        logging_dir="./logs",
+        save_total_limit=1,
+        save_strategy="epoch",
+    )
+
+    trainer = Trainer(
+        model=model,
+        args=training_args,
+        train_dataset=tokenized["train"],
+        eval_dataset=tokenized["test"],
+    )
+
+    trainer.train()
+    model.save_pretrained("./saved_model")
+    tokenizer.save_pretrained("./saved_model")
+    print("✅ Model trained and saved to ./saved_model")
