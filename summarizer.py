@@ -1,22 +1,29 @@
 # summarizer.py
+from transformers import BartForConditionalGeneration, BartTokenizer
+import torch
 
-from sumy.parsers.plaintext import PlaintextParser
-from sumy.nlp.tokenizers import Tokenizer
-from sumy.summarizers.text_rank import TextRankSummarizer
+# Load once
+tokenizer = BartTokenizer.from_pretrained("facebook/bart-large-cnn")
+model = BartForConditionalGeneration.from_pretrained("facebook/bart-large-cnn")
 
-def summarize_contract(text, sentence_count=5):
+def summarize_contract(text, max_length=200, min_length=60):
     """
-    Summarizes contract text using Sumy's TextRank.
-
+    Summarizes contract text using BART.
     Args:
-        text (str): Full contract text.
-        sentence_count (int): Number of summary sentences to return.
-
+        text (str): Input legal text.
+        max_length (int): Max tokens in summary.
+        min_length (int): Min tokens in summary.
     Returns:
-        str: Summarized contract text.
+        str: Summary text.
     """
-    parser = PlaintextParser.from_string(text, Tokenizer("english"))
-    summarizer = TextRankSummarizer()
-    summary = summarizer(parser.document, sentence_count)
-
-    return " ".join([str(sentence) for sentence in summary]) or "Summary could not be generated."
+    inputs = tokenizer.batch_encode_plus([text], return_tensors="pt", truncation=True, max_length=1024)
+    summary_ids = model.generate(
+        inputs["input_ids"],
+        max_length=max_length,
+        min_length=min_length,
+        length_penalty=2.0,
+        num_beams=4,
+        early_stopping=True
+    )
+    summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
+    return summary
