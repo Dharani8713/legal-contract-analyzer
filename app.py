@@ -50,6 +50,12 @@ if uploaded_file:
     # Step 3: Clause Classification
     with st.spinner("⚖️ Classifying clauses..."):
         clause_labels = classify_clauses(clauses)
+        
+        # Ensure equal length for CSV and JSON export
+        min_len = min(len(clauses), len(clause_labels))
+        clauses = clauses[:min_len]
+        clause_labels = clause_labels[:min_len]
+
         clause_df = pd.DataFrame({
             "Clause": clauses,
             "Label": clause_labels
@@ -69,16 +75,9 @@ if uploaded_file:
     st.subheader("🧠 Summary of Contract")
     st.write(summary)
 
-    # Prepare and download results
-    json_data = {
-        "clauses": clauses,
-        "labels": clause_labels,
-        "entities": entities,
-        "summary": summary
-    }
-
+    # Downloads
     clause_csv = clause_df.to_csv(index=False)
-    clause_json = pd.DataFrame(json_data).to_json(orient="records")
+    clause_json = clause_df.to_json(orient="records")  # only clause-label pairs
 
     st.download_button("📥 Download Clauses (CSV)", clause_csv, file_name="clauses.csv")
     st.download_button("📥 Download Results (JSON)", clause_json, file_name="contract_analysis.json")
