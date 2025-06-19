@@ -1,26 +1,11 @@
-# Streamlit for the web interface
 streamlit==1.34.0
-
-# Core libraries
-pandas==2.2.2
+pandas==2.1.4
 numpy==1.26.4
-
-# PDF and DOCX parsing
 pdfplumber==0.10.3
 python-docx==1.1.0
-
-# NER and NLP
 nltk==3.8.1
 sumy==0.11.0
 spacy==3.7.4
-
-# Transformers and PyTorch for classification
 transformers==4.41.1
-torch==2.3.0
-
-# Optional utils
-scikit-learn==1.5.0
-
-# Ensure sentence tokenization works
-# These are not installed automatically by nltk
-# We’ll manually include code to download punkt in the app
+torch==2.2.2
+scikit-learn==1.4.2
