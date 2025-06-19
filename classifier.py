@@ -24,10 +24,6 @@ LABELS = [
     "Label 30", "Label 31", "Label 32", "Label 33", "Label 34", "Label 35",
     "Label 36", "Label 37", "Label 38"
 ]
-
-
-
-
 def classify_clauses(clauses):
     predictions = []
     for clause in clauses:
