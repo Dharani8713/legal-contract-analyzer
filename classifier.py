@@ -6,7 +6,7 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from torch.nn.functional import softmax
 
 # Load model and tokenizer
-model_dir = "./saved_model"
+model_dir = "nlpaueb/legal-bert-base-uncased"
 tokenizer = AutoTokenizer.from_pretrained(model_dir)
 model = AutoModelForSequenceClassification.from_pretrained(model_dir)
 
