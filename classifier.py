@@ -7,8 +7,7 @@ import pandas as pd
 import numpy as np
 
 # Load model and tokenizer
-model_dir = model_dir = "nlpaueb/legal-bert-base-uncased
-
+model_dir = "nlpaueb/legal-bert-base-uncased"
 try:
     tokenizer = AutoTokenizer.from_pretrained(model_dir)
     model = AutoModelForSequenceClassification.from_pretrained(model_dir, num_labels=2)
