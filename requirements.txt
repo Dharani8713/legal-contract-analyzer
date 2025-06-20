@@ -6,7 +6,7 @@ python-docx==1.2.0
 docx2txt==0.9
 nltk==3.9.1
 sumy==0.11.0
-spacy==3.7.1
+https://github.com/explosion/spacy/releases/download/v3.7.1/spacy-3.7.1-cp310-cp310-manylinux_2_17_x86_64.whl
 transformers==4.41.2
 torch==2.1.0
 safetensors==0.5.3
