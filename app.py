@@ -4,7 +4,7 @@ import streamlit as st
 import pandas as pd
 import tempfile
 import os
-
+st.set_option('client.showErrorDetails', True)
 from document_parser import (
     extract_text_from_pdf,
     extract_text_from_docx,
