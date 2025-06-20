@@ -1,28 +1,12 @@
-# Streamlit app UI
-streamlit==1.27.2
-
-# Document parsing
-pdfplumber==0.10.3
-docx2txt==0.9
-
-# Data handling
-pandas==1.5.3
-numpy==1.23.5
-
-# NLP: SpaCy core + NER
+streamlit==1.34.0
+pandas==2.2.2
+pdfplumber==0.11.0
+python-docx==1.1.0
+docx2txt==0.8
 spacy==3.7.1
-
-# Transformers + PyTorch for classification and summarization
-transformers==4.30.2
-torch==2.0.1
-safetensors==0.3.1
-sentencepiece==0.2.0
-
-# Text summarization helper
-sumy==0.11.0
-
-# Utils
-gdown==4.7.1
-
-# Optional: NER training eval metrics
+en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1.tar.gz
+transformers==4.40.1
+torch==2.2.2
+gdown==5.2.0
+scikit-learn==1.3.2
 seqeval==1.2.2
