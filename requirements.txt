@@ -1,17 +1,29 @@
-streamlit==1.45.1
-pandas==2.2.3
-numpy==1.26.4
-pdfplumber==0.11.6
-python-docx==1.2.0
+# Streamlit app UI
+streamlit==1.27.2
+
+# Document parsing
+pdfplumber==0.10.3
 docx2txt==0.9
-nltk==3.9.1
-sumy==0.11.0
-https://github.com/explosion/spacy/releases/download/v3.7.1/spacy-3.7.1-cp310-cp310-manylinux_2_17_x86_64.whl
-transformers==4.41.2
-torch==2.1.0
-safetensors==0.5.3
-scikit-learn==1.7.0
+
+# Data handling
+pandas==1.5.3
+numpy==1.23.5
+
+# NLP: SpaCy core + NER
+spacy==3.7.1
+en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl
+
+# Transformers + PyTorch for classification and summarization
+transformers==4.30.2
+torch==2.0.1
+safetensors==0.3.1
 sentencepiece==0.2.0
-requests==2.32.3
-en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl#sha256=1932429db727d4bff3deed6b34cfc05df17794f4a52eeb26cf8928f7c1a0fb85
-gdown
+
+# Text summarization helper
+sumy==0.11.0
+
+# Utils
+gdown==4.7.1
+
+# Optional: NER training eval metrics
+seqeval==1.2.2
