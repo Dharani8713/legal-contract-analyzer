@@ -1,12 +1,21 @@
 # ner.py
 
 import spacy
-try:
-    nlp = spacy.load("en_core_web_sm")
-except OSError:
-    from spacy.cli import download
-    download("en_core_web_sm")
-    nlp = spacy.load("en_core_web_sm")
+import subprocess
+import importlib.util
+
+# ✅ Ensure the SpaCy model is available, otherwise download it
+def ensure_spacy_model():
+    model_name = "en_core_web_sm"
+    if importlib.util.find_spec(model_name) is None:
+        print("🔄 Downloading en_core_web_sm...")
+        subprocess.run(["python", "-m", "spacy", "download", model_name], check=True)
+
+# ⬇️ Run the check-and-download logic
+ensure_spacy_model()
+
+# 🧠 Load the SpaCy model
+nlp = spacy.load("en_core_web_sm")
 
 
 def extract_entities(text):
