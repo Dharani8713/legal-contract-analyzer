@@ -28,10 +28,7 @@ download_model()
 # 🧠 Load tokenizer and model
 try:
     tokenizer = AutoTokenizer.from_pretrained(model_dir)
-    model = AutoModelForSequenceClassification.from_pretrained(
-        model_dir,
-        from_safetensors=True
-    )
+    model = AutoModelForSequenceClassification.from_pretrained(model_dir)
     model.eval()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
